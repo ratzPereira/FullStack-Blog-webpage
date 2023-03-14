@@ -11,7 +11,7 @@ export class LoginComponent {
 
   login() {
     this.authService
-      .login('email1@email.com', '1234567')
+      .login('email1@email.com', '123456')
       .subscribe((data) => console.log('logged in'));
   }
 }
