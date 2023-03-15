@@ -38,7 +38,7 @@ export class AuthenticationService {
 
   register(user: RegisterForm) {
     return this.http
-      .post<any>('http://localhost:3000/api/users/login', user)
+      .post<any>('http://localhost:3000/api/users', user)
       .pipe(map((user) => user));
   }
 }
