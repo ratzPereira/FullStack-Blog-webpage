@@ -7,12 +7,14 @@ export interface LoginForm {
   password: string;
 }
 
-export interface RegisterForm {
+export interface User {
   email: string;
   password: string;
   name: string;
   username: string;
   passwordConfirm: string;
+
+  role?: string;
 }
 
 @Injectable({
@@ -36,7 +38,7 @@ export class AuthenticationService {
       );
   }
 
-  register(user: RegisterForm) {
+  register(user: User) {
     return this.http
       .post<any>('http://localhost:3000/api/users', user)
       .pipe(map((user) => user));
