@@ -4,6 +4,7 @@ import {
   UserService,
 } from '../../services/user-service/user.service';
 import { map, tap } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-users',
@@ -13,6 +14,8 @@ import { map, tap } from 'rxjs';
 export class UsersComponent implements OnInit {
   dataSource: UserData | undefined;
   displayedColumns: string[] = ['id', 'name', 'email', 'role', 'username'];
+
+  pageEvent: PageEvent;
 
   constructor(private readonly userService: UserService) {}
 
@@ -27,6 +30,18 @@ export class UsersComponent implements OnInit {
         tap((users) => console.log(users)),
         map((userData: UserData) => (this.dataSource = userData))
       )
+      .subscribe();
+  }
+
+  onPaginateChange(event: PageEvent) {
+    let page = event.pageIndex;
+    let size = event.pageSize;
+
+    page = page + 1;
+
+    this.userService
+      .findAll(page, size)
+      .pipe(map((userData: UserData) => (this.dataSource = userData)))
       .subscribe();
   }
 }
