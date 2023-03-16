@@ -1,8 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
+
+class CustomValidators {
+  static passwordContainsNumber(
+    control: AbstractControl
+  ): ValidationErrors | null {
+    const regex = /\d/;
+
+    if (regex.test(control.value) && control.value !== null) {
+      return null;
+    } else {
+      return { passwordInvalid: true };
+    }
+  }
+
+  static passwordsMatch(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const passwordConfirm = control.get('passwordConfirm')?.value;
+
+    if (password && password === passwordConfirm) {
+      return null;
+    } else {
+      return { passwordNotMatching: true };
+    }
+  }
+}
 
 @Component({
   selector: 'app-register',
@@ -27,11 +58,25 @@ export class RegisterComponent implements OnInit {
           null,
           [Validators.email, Validators.required, Validators.minLength(6)],
         ],
-        password: [null, [Validators.required, Validators.minLength(4)]],
-        passwordConfirm: [null, [Validators.required, Validators.minLength(4)]],
+        password: [
+          null,
+          [
+            Validators.required,
+            Validators.minLength(4),
+            CustomValidators.passwordContainsNumber,
+          ],
+        ],
+        passwordConfirm: [
+          null,
+          [
+            Validators.required,
+            Validators.minLength(4),
+            CustomValidators.passwordContainsNumber,
+          ],
+        ],
       },
       {
-        //validators : CustomValidators.passwordMatches
+        validators: CustomValidators.passwordsMatch,
       }
     );
   }
